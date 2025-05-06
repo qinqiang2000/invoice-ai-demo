@@ -8,3 +8,6 @@ wheels/
 .DS_Store
 # Virtual environments
 .venv
+output/
+*.gv
+*.pdf

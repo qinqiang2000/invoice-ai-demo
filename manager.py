@@ -8,7 +8,7 @@ from typing import Any
 from rich.console import Console
 
 from agents import RunContextWrapper, RunHooks, Runner, RunResult, Tool, Usage, custom_span, gen_trace_id, handoff, trace, Agent
-
+from agents.extensions.visualization import draw_graph
 from agents_tools.pdf_generation_agent import pdf_generation_agent
 from agents_tools.validation_agent import validation_agent
 from agents_tools.completion_agent import completion_agent
@@ -82,11 +82,14 @@ class InvoiceManager:
             handoff(agent=pdf_generation_agent),
             handoff(agent=completion_agent),
         ]
+        
+        # draw_graph(validation_agent).view()
+        
 
     async def run(self, context: InvoiceContext) -> None:
         trace_id = gen_trace_id()
         with trace("Invoice manager trace", trace_id=trace_id):
-            print(f"\033[4;34mView trace: https://platform.openai.com/traces/trace?trace_id={trace_id}\033[0m")
+            print(f"View trace: \033[4;34mhttps://platform.openai.com/traces/trace?trace_id={trace_id} \033[0m")
 
             final_result = await Runner.run(
                 starting_agent=completion_agent,
@@ -95,5 +98,5 @@ class InvoiceManager:
                 hooks=hooks,
                 max_turns=15,
             )
+        
             
-            self.printer.end()
